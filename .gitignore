@@ -18,5 +18,8 @@ Makefile*
 
 debug/*
 release/*
+portable/*
 
+resources/test.bmp
+resources/pattern.bmp
 result.bmp

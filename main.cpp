@@ -1,5 +1,5 @@
 /*****************************************************************************
-Copyright (c) 2016 Javi Carnero
+Copyright (c) 2016 Javier Carnero
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -30,13 +30,13 @@ SOFTWARE.
 using namespace cv;
 
 int main(int argc, char *argv[]) {
-  std::cout << "Calibrando..." << std::endl;
+  std::cout << "Calibrating..." << std::endl;
 
   vector<vector<Point3f>> object_points;
   vector<vector<Point2f>> image_points;
 
   int square_size = 108;
-  Size board_size(23, 17); //esquinas interiores
+  Size board_size(23, 17); //inside corners
   vector<Point3f> chessboard_corners;
   for( int i = 0; i < board_size.height; ++i )
       for( int j = 0; j < board_size.width; ++j )
@@ -44,8 +44,8 @@ int main(int argc, char *argv[]) {
 
 
 
-  //////////SE REPITE PARA CADA IMAGEN QUE QUERAMOS USAR PARA CALIBRAR////////////////////
-  Mat distorted_board = imread("patron.bmp");
+  ///////////////////////REPEATED FOR EACH IMAGE USED FOR CALIBRATION//////////////////////
+  Mat distorted_board = imread("resources/pattern.bmp");
   vector<Point2f> corners;
 
   bool found = findChessboardCorners(distorted_board, board_size, corners,
@@ -63,9 +63,9 @@ int main(int argc, char *argv[]) {
     image_points.push_back(corners);
     object_points.push_back(chessboard_corners);
 
-    std::cout << "..¡tablero encontrado!..." << std::endl;
+    std::cout << "..¡chess pattern found in image!..." << std::endl;
   } else {
-    std::cout << "..tablero no encontrado :-(" << std::endl;
+    std::cout << "..chess pattern not found in image :-(" << std::endl;
     return 0;
   }
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -85,22 +85,20 @@ int main(int argc, char *argv[]) {
   fs << "distCoeffs" << distCoeffs;
   fs.release();
 
-//  Mat intrinsic;
-//  Mat distCoeffs;
-//  FileStorage fs;
-//  fs.open("len_config.xml", FileStorage::READ);
+  //example of how to use the xml generated
+  fs.open("len_config.xml", FileStorage::READ);
 
   fs["intrinsic"] >> intrinsic;
   fs["distCoeffs"] >> distCoeffs;
 
   fs.release();
 
-  Mat distorted_image = imread("background.bmp");
+  Mat distorted_image = imread("resources/test.bmp");
   Mat imageUndistorted;
   undistort(distorted_image, imageUndistorted, intrinsic, distCoeffs);
 
   imwrite("result.bmp", imageUndistorted);
-  std::cout << "..imagen no distorsionada!" << std::endl;
+  std::cout << "..test undistorted!" << std::endl;
 
-	return 0;
+  return 0;
 }
